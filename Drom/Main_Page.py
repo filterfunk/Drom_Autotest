@@ -1,22 +1,30 @@
-# Набор методов на главной странице
+import pytest
 from selenium import webdriver
 import time
-import pytest
+
 
 link = "https://www.drom.ru"
 
 
-@pytest.fixture
+# Мы создадим фикстуру browser, которая будет создавать объект WebDriver.
+@pytest.fixture(scope="class")
 def browser():
-    print("\nstart browser for test..")
+    print("\nЗапускаем браузер для тестов..")
     browser = webdriver.Chrome()
     yield browser
     # этот код выполнится после завершения теста
-    print("\nquit browser..")
+    print("\nЗакрываем браузер после тестов..")
     browser.quit()
 
 
-class LargusSearch:
+#@pytest.fixture(autouse=True)
+#def prepare_data():
+#    print()
+ #   print("preparing some critical data for every test")
+
+
+class TestMainPage1():
+    # вызываем фикстуру в тесте, передав ее как параметр
     @pytest.mark.smoke
     def test_we_can_find_largus(self, browser):
         print("test_we_can_find_largus")
@@ -27,8 +35,7 @@ class LargusSearch:
         browser.find_element_by_xpath("//a[@class='css-ifsycf e1wvjnck0'][2]").click()
         # Прокручиваем вниз, чтобы было видно списки моделей
         element = browser.find_element_by_xpath("//button[contains(text(), 'Марка')]")
-        browser.execute_script("return arguments[0].scrollIntoView(true);", element)
-        # Найти Ларгусы
+        browser.execute_script('return arguments[0].scrollIntoView(true)', element)
         brand = browser.find_element_by_xpath("//button[contains(text(), 'Марка')]").click()
         brand1 = browser.find_element_by_xpath("//div[contains(text(), 'Лада')][2]").click()
         model = browser.find_element_by_xpath("//button[contains(text(), 'Модель')][1]").click()
@@ -44,4 +51,3 @@ class LargusSearch:
         assert userpage == "https://novosibirsk.drom.ru/lada/largus/?minyear=2015&distance=1000"
         time.sleep(5)
         browser.quit()
-

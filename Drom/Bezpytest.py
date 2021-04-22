@@ -1,5 +1,5 @@
 # Набор методов на главной странице
-import self as self
+
 from selenium import webdriver
 import time
 

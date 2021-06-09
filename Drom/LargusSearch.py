@@ -1,7 +1,8 @@
 import pytest
 from selenium import webdriver
 import time
-
+import allure
+from allure_commons.types import AttachmentType
 
 link = "https://www.drom.ru"
 
@@ -17,11 +18,8 @@ def browser():
     browser.quit()
 
 
-#@pytest.fixture(autouse=True)
-#def prepare_data():
-#    print()
- #   print("preparing some critical data for every test")
-
+# Запуск тестов - pytest --alluredir results .\LargusSearch.py
+# Создание отчёта Allure - allure serve results
 
 class TestMainPage1():
     # вызываем фикстуру в тесте, передав ее как параметр
@@ -47,7 +45,11 @@ class TestMainPage1():
         browser.execute_script("return arguments[0].scrollIntoView(true);", submit)
         submit = browser.find_element_by_xpath("//button[@type='submit']").click()
         userpage = browser.current_url
-        print(userpage)
+        print("URL страницы: " + userpage)
+        print("Title страницы: " + browser.title)
+        with allure.step('Сделать скриншот'):
+            allure.attach(browser.get_screenshot_as_png(),
+                          name='Поиск Ларгуса', attachment_type=AttachmentType.PNG)
         assert userpage == "https://novosibirsk.drom.ru/lada/largus/?minyear=2015&distance=1000"
         time.sleep(5)
         browser.quit()
